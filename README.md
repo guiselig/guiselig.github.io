@@ -1,2 +1,2 @@
-# guiselig.github.io
+# Traços
 Seu novo jogo diário!
