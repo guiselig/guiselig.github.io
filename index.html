@@ -7,9 +7,9 @@
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <title>Traços</title>
-<link rel="icon" type="image/svg+xml" href="tracos-url-logo.svg">
-<link rel="shortcut icon" href="tracos-url-logo.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="shortcut icon" href="favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Orbitron:wght@400;700;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ── VARIÁVEIS E RESET ── */
@@ -1263,35 +1263,35 @@ main[data-letters="7"] {
   <div class="tut-modal">
     <div class="tut-slide active" id="ts-0">
       <div class="tut-num">1 DE 5</div>
-      <div class="tut-title">O QUE É TRAÇOS?</div>
-      <div class="tut-body">Cada dia há uma nova <strong>palavra secreta</strong> de 5 a 7 letras. Você tem <strong>4 tentativas</strong> para descobri-la digitando palavras reais em português.</div>
+      <div class="tut-title">A PALAVRA</div>
+      <div class="tut-body">Cada dia há uma nova <strong>palavra secreta</strong>. Você tem <strong>4 tentativas</strong> para descobri-la.</div>
     </div>
     <div class="tut-slide" id="ts-1">
       <div class="tut-num">2 DE 5</div>
-      <div class="tut-title">O DISPLAY</div>
-      <div class="tut-body">Cada posição da palavra é um <strong>display de segmentos</strong>. Antes de qualquer tentativa, todos os traços aparecem apagados.</div>
-      <div class="tut-example" id="tut-ex-1" style="flex-wrap:nowrap"></div>
+      <div class="tut-title">AS LETRAS</div>
+      <div class="tut-body">Cada letra é formada por <strong>tracinhos</strong>, como num relógio digital. Veja alguns exemplos:</div>
+      <div class="tut-example" id="tut-ex-1" style="flex-wrap:wrap;gap:12px;justify-content:center"></div>
     </div>
     <div class="tut-slide" id="ts-2">
       <div class="tut-num">3 DE 5</div>
-      <div class="tut-title">COMO FUNCIONA</div>
-      <div class="tut-body">Os traços <strong>em comum</strong> entre a letra digitada e a real acendem. Acertos acumulam entre tentativas.</div>
+      <div class="tut-title">CHUTOU?</div>
+      <div class="tut-body">Os traços <strong>em comum</strong> entre a letra que você chutou e a letra correta acendem.</div>
       <div id="tut-ex-2" style="display:flex;align-items:center;gap:18px;justify-content:center;flex-wrap:wrap"></div>
     </div>
     <div class="tut-slide" id="ts-3">
       <div class="tut-num">4 DE 5</div>
-      <div class="tut-title">VERDE = ACERTO!</div>
-      <div class="tut-body">Posição certa → letra <span style="color:var(--ok)">completa em verde</span>. A célula <strong>trava</strong>.</div>
-      <div class="tut-example" id="tut-ex-3"></div>
+      <div class="tut-title">ACERTO!</div>
+      <div class="tut-body">Letra na posição certa fica <span style="color:var(--ok)"><strong>verde</strong></span>. Cada chute revela mais traços.</div>
+      <div class="tut-example" id="tut-ex-3" style="gap:10px;flex-wrap:wrap;justify-content:center"></div>
       <div class="tut-body" style="font-size:14px">✦ Acertar na <strong>1ª tentativa</strong> = <span style="color:var(--gold)">Traço de Ouro!</span></div>
     </div>
     <div class="tut-slide" id="ts-4">
       <div class="tut-num">5 DE 5</div>
       <div class="tut-title">RECURSOS</div>
       <div class="tut-body" style="text-align:left;max-width:380px;line-height:2">
-        <strong style="color:var(--acc)">DICAS</strong> — 4 dicas progressivas desbloqueadas conforme você tenta. Cada dica só é revelada ao clicar em <em>Revelar</em>.<br>
-        <strong style="color:var(--acc)">CALENDÁRIO</strong> — acesse e jogue qualquer palavra dos dias anteriores, no seu próprio ritmo.<br>
-        <strong style="color:var(--acc)">ESTATÍSTICAS</strong> — acompanhe sua sequência, taxa de vitória, Traços de Ouro e distribuição de tentativas.
+        <strong style="color:var(--acc)">DICAS</strong> — desbloqueadas conforme você tenta.<br>
+        <strong style="color:var(--acc)">CALENDÁRIO</strong> — jogue palavras dos dias anteriores.<br>
+        <strong style="color:var(--acc)">ESTATÍSTICAS</strong> — sequência, vitórias e Traços de Ouro.
       </div>
     </div>
     <div class="tut-nav">
@@ -1958,21 +1958,94 @@ function makeTutSVG(ch,mode,w=52,h=78){
   return`<svg viewBox="0 0 40 60" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">${p}</svg>`;
 }
 function buildTutExamples(){
-  const ex1=document.getElementById('tut-ex-1');ex1.innerHTML='';
-  const modalW1=document.querySelector('.tut-modal').clientWidth||400;
-  const sw1=Math.max(22,Math.floor((modalW1-60)/6*0.78));const sh1=Math.round(sw1*1.5);
-  for(const ch of 'TRACOS'){const d=document.createElement('div');d.className='g-cell';d.style.padding='4px';d.innerHTML=makeTutSVG(ch,'ghost',sw1,sh1);ex1.appendChild(d);}
-  const ex2=document.getElementById('tut-ex-2');ex2.innerHTML='';
-  const tsA=new Set(segsOf('A')),gsH=new Set(segsOf('N')),shared=new Set();
-  for(const s of tsA)if(gsH.has(s))shared.add(s);
-  const cell2=document.createElement('div');cell2.className='g-cell';cell2.style.padding='6px';
-  let p2='';for(const id of ALL_S)p2+=`<path class="${shared.has(id)?'sg sg-on':'sg sg-ghost'}" d="${SEGS[id]}"/>`;
-  cell2.innerHTML=`<svg viewBox="0 0 40 60" width="52" height="78" xmlns="http://www.w3.org/2000/svg">${p2}</svg>`;
-  const info=document.createElement('div');info.style.cssText='font-size:13px;color:var(--txt-mid);line-height:2.1;text-align:left';
-  info.innerHTML=`Alvo: <span style="font-family:var(--font-dig);color:var(--acc);font-size:15px">A</span><br>Tentativa: <span style="font-family:var(--font-dig);color:var(--txt);font-size:15px">N</span><br><span style="color:var(--acc)">▪</span> Em Comum<br><span style="color:var(--txt-dim)">▪</span> Não Comum ou Não Revelado`;
-  ex2.appendChild(cell2);ex2.appendChild(info);
-  const ex3=document.getElementById('tut-ex-3');ex3.innerHTML='';
-  const d4=document.createElement('div');d4.className='g-cell correct';d4.style.padding='6px';d4.innerHTML=makeTutSVG('A','correct',52,78);ex3.appendChild(d4);
+  const modalW = document.querySelector('.tut-modal').clientWidth || 400;
+
+  // Slide 2: mostrar letras A, B, T, S formadas pelos segmentos
+  const ex1 = document.getElementById('tut-ex-1'); ex1.innerHTML = '';
+  const sw1 = Math.max(36, Math.floor((modalW - 80) / 5 * 0.82));
+  const sh1 = Math.round(sw1 * 1.5);
+  for (const ch of 'ABTS') {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px';
+    const cell = document.createElement('div');
+    cell.className = 'g-cell'; cell.style.padding = '6px';
+    cell.innerHTML = makeTutSVG(ch, 'on', sw1, sh1);
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'font-family:var(--font-dig);font-size:11px;letter-spacing:1px;color:var(--txt-dim)';
+    lbl.textContent = ch;
+    wrap.appendChild(cell); wrap.appendChild(lbl);
+    ex1.appendChild(wrap);
+  }
+
+  // Slide 3: chute N, alvo A → traços em comum acendem
+  const ex2 = document.getElementById('tut-ex-2'); ex2.innerHTML = '';
+  const sw2 = 56, sh2 = 84;
+  const tsA = new Set(segsOf('A')), gsN = new Set(segsOf('N')), shared = new Set();
+  for (const s of tsA) if (gsN.has(s)) shared.add(s);
+
+  // Bloco de chute: N com traços comuns acesos
+  const chute = document.createElement('div');
+  chute.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px';
+  let pN = ''; for (const id of ALL_S) pN += `<path class="${shared.has(id)?'sg sg-on':'sg sg-ghost'}" d="${SEGS[id]}"/>`;
+  const cellN = document.createElement('div'); cellN.className = 'g-cell'; cellN.style.padding = '6px';
+  cellN.innerHTML = `<svg viewBox="0 0 40 60" width="${sw2}" height="${sh2}" xmlns="http://www.w3.org/2000/svg">${pN}</svg>`;
+  const lblN = document.createElement('div');
+  lblN.style.cssText = 'font-size:11px;color:var(--txt-dim);text-align:center;line-height:1.6';
+  lblN.innerHTML = `
+    <div style="display:flex;gap:16px;justify-content:center;margin-top:4px">
+      <div style="text-align:center">
+        <div style="font-size:10px;letter-spacing:2px;color:var(--txt-dim);margin-bottom:2px">VOCÊ CHUTOU</div>
+        <div style="font-family:var(--font-dig);font-size:28px;font-weight:700;color:var(--txt)">N</div>
+      </div>
+      <div style="font-size:20px;color:var(--txt-dim);align-self:center">→</div>
+      <div style="text-align:center">
+        <div style="font-size:10px;letter-spacing:2px;color:var(--txt-dim);margin-bottom:2px">LETRA CERTA</div>
+        <div style="font-family:var(--font-dig);font-size:28px;font-weight:700;color:var(--acc)">A</div>
+      </div>
+    </div>`;
+  chute.appendChild(cellN); chute.appendChild(lblN);
+
+  // Legenda
+  const info = document.createElement('div');
+  info.style.cssText = 'font-size:12px;color:var(--txt-mid);line-height:2;text-align:left';
+  info.innerHTML = `<span style="color:var(--acc)">▪</span> Traço em comum<br><span style="color:var(--txt-dim)">▪</span> Não revelado`;
+
+  ex2.appendChild(chute); ex2.appendChild(info);
+
+  // Slide 4: acúmulo — mostrar estado após 1 chute e depois verde
+  const ex3 = document.getElementById('tut-ex-3'); ex3.innerHTML = '';
+
+  // Célula com traços revelados (após 1 chute de N para A)
+  const cellRev = document.createElement('div'); cellRev.className = 'g-cell'; cellRev.style.padding = '6px';
+  let pRev = ''; for (const id of ALL_S) pRev += `<path class="${shared.has(id)?'sg sg-on':'sg sg-ghost'}" d="${SEGS[id]}"/>`;
+  cellRev.innerHTML = `<svg viewBox="0 0 40 60" width="${sw2}" height="${sh2}" xmlns="http://www.w3.org/2000/svg">${pRev}</svg>`;
+
+
+  const wrap1 = document.createElement('div');
+  wrap1.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px';
+  const lblRevTop = document.createElement('div');
+  lblRevTop.style.cssText = 'font-size:10px;letter-spacing:2px;color:var(--txt-dim)';
+  lblRevTop.textContent = '1º CHUTE';
+  wrap1.appendChild(lblRevTop); wrap1.appendChild(cellRev);
+
+  // Seta
+  const arrow2 = document.createElement('div');
+  arrow2.style.cssText = 'font-size:22px;color:var(--txt-dim);align-self:center';
+  arrow2.textContent = '→';
+
+  // Célula verde (acerto)
+  const cellOk = document.createElement('div'); cellOk.className = 'g-cell correct'; cellOk.style.padding = '6px';
+  cellOk.innerHTML = makeTutSVG('A', 'correct', sw2, sh2);
+  const lblOkTop = document.createElement('div');
+  lblOkTop.style.cssText = 'font-size:10px;letter-spacing:2px;color:var(--ok)';
+  lblOkTop.textContent = 'ACERTO!';
+
+  const wrap2 = document.createElement('div');
+  wrap2.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:4px';
+  wrap2.appendChild(lblOkTop); wrap2.appendChild(cellOk);
+
+  ex3.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:12px;justify-content:center;flex-wrap:nowrap';
+  ex3.appendChild(wrap1); ex3.appendChild(arrow2); ex3.appendChild(wrap2);
 }
 function updateTut(){
   for(let i=0;i<TUT_N;i++)document.getElementById(`ts-${i}`).classList.toggle('active',i===tutSlide);
