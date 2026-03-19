@@ -3,6 +3,7 @@
 
 const DICIONARIO = [
   "AABORA",
+  "NIGGA",
   "AACHEN",
   "AAIRA",
   "AAIUN",
