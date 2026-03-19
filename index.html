@@ -1365,7 +1365,7 @@ const COMMON=["AGUA","ALMA","AMOR","ARCO","AZUL","BALA","BOCA","BOLO","BOTA","CA
 let DAILY_POOL=[...COMMON],VALID_SET=new Set(typeof DICIONARIO!=='undefined'?DICIONARIO:COMMON);
 
 // ── Estado do jogo ──
-const MAX_ATT = 4, ORIGIN = new Date(Date.UTC(2026, 2, 1));
+const MAX_ATT = 4, ORIGIN = new Date(Date.UTC(2026, 2, 17));
 
 // ── Modo Difícil ──
 let hardMode = false;
@@ -1384,9 +1384,13 @@ let isArchive = false;
 
 function dayNum(d) {
   const dt = d ? new Date(d) : new Date(realNow);
-  // Usa UTC para não depender do fuso horário do dispositivo
-  const utcMidnight = Date.UTC(dt.getUTCFullYear(), dt.getUTCMonth(), dt.getUTCDate());
-  return Math.max(0, Math.floor((utcMidnight - ORIGIN) / 86400000));
+  // Converte para horário de Brasília (UTC-3) antes de calcular o dia
+  const BRT = 3 * 3600000;
+  const brMs = dt.getTime() - BRT;
+  const br = new Date(brMs);
+  const brMidnight = Date.UTC(br.getUTCFullYear(), br.getUTCMonth(), br.getUTCDate());
+  const originBr = ORIGIN.getTime() - BRT;
+  return Math.max(0, Math.floor((brMidnight - originBr) / 86400000));
 }
 
 function dayToDate(d) {
@@ -2070,7 +2074,7 @@ function renderCal(){
   const first=new Date(calY,calM,1).getDay(),off=(first+6)%7,cnt=new Date(calY,calM+1,0).getDate();
   let cells='';for(let i=0;i<off;i++)cells+=`<div class="cal-day empty"></div>`;
   for(let day=1;day<=cnt;day++){
-    const dt=new Date(calY,calM,day),dn=dayNum(dt),future=dt>now,isToday=dt.getTime()===now.getTime();
+    const dt=new Date(calY,calM,day),dn=dayNum(dt),future=dt>now||dn<1,isToday=dt.getTime()===now.getTime();
     const dd=days[dn];let cls='cal-day';
     if(future)cls+=' future';else if(isToday)cls+=' today';else if(dd?.status==='won')cls+=' past won';else if(dd?.status==='lost')cls+=' past lost';else cls+=' past';
     if(dn===currentDay)cls+=' playing';
