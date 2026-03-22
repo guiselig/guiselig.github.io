@@ -1352,7 +1352,7 @@ body.hard-active .logo-icon .sg-correct {
           <div class="att-grid" id="att-grid"></div>
         </div>
       </div>
-      <div style="display: grid; width: 100%; grid-template-rows: min-content;">
+      <div id="kb-grid" style="display: grid; width: 100%; grid-template-rows: min-content;">
     
     <div id="kb-wrap" style="grid-area: 1 / 1; transition: opacity 0.2s ease;"></div>
     
@@ -1950,8 +1950,9 @@ function buildKb(){
     ['A','S','D','F','G','H','J','K','L'],
     ['⌫','Z','X','C','V','B','N','M','ENTER']
   ];
-  const states=getLetterStates();
-  if(infiniteMode)for(const c of infEliminated)if(!states[c])states[c]='kb-miss';
+  // Cores do teclado: só letras eliminadas pela dica (ambos modos sem cores de tentativas)
+  const elimStates={};
+  if(infiniteMode) for(const c of infEliminated) elimStates[c]='kb-miss';
   kb.innerHTML='';
   for(const row of rows){
     const rowEl=document.createElement('div');
@@ -1962,7 +1963,7 @@ function buildKb(){
       if(key==='⌫'){btn.classList.add('kb-wide','kb-bksp');btn.textContent='⌫';}
       else if(key==='ENTER'){btn.classList.add('kb-wide');btn.textContent='ENTER';}
       else{
-        if(infiniteMode&&states[key])btn.classList.add(states[key]);
+        if(elimStates[key])btn.classList.add(elimStates[key]);
         btn.innerHTML=makeTutSVG(key,'correct',10,15);
       }
       btn.addEventListener('pointerdown',e=>{
@@ -3150,36 +3151,34 @@ function layoutMobile(){
   const rightCol=document.getElementById('right-col');
   const mainEl=document.querySelector('main');
   const rightCard=document.querySelector('.right-card-container');
-  const kbWrap=document.getElementById('kb-wrap');
+  const kbGrid=document.getElementById('kb-grid');
   const dayLbl=document.getElementById('day-lbl');
   const headerRow=document.querySelector('.header-row');
   const badge=document.querySelector('.daily-badge');
   const app=mainEl?mainEl.parentElement:null;
   const footerEl=app?app.querySelector('footer'):null;
-  if(!btns||!attempts||!leftCol||!leftGlass||!rightCol||!mainEl||!rightCard||!kbWrap||!dayLbl||!app)return;
+  if(!btns||!attempts||!leftCol||!leftGlass||!rightCol||!mainEl||!rightCard||!kbGrid||!dayLbl||!app)return;
   if(window.innerWidth<=700){
     // Badge → antes do glass-card em leftCol
     if(badge&&badge.parentElement!==leftCol) leftCol.insertBefore(badge,leftGlass);
     // Data → após o glass-card em leftCol
     if(dayLbl.parentElement!==leftCol) leftCol.appendChild(dayLbl);
-    // Ícones → último filho do glass-card esquerdo
     // Ícones → dentro do logo-header (à direita do título)
     const logoHeader=document.getElementById('logo-header');
     if(logoHeader && btns.parentElement!==logoHeader) logoHeader.appendChild(btns);
-    // Card direito → fora do main (rightCard ainda em main aqui)
+    // Card direito → fora do main
     if(rightCard.parentElement===mainEl){
-      const footerEl=app.querySelector('footer');
       app.insertBefore(rightCard,footerEl||null);
     }
-    // Teclado → dentro do card direito
-    if(kbWrap.parentElement!==rightCard) rightCard.appendChild(kbWrap);
+    // Teclado (kb-grid = kb-wrap + mobile-share-container) → dentro do card direito
+    if(kbGrid.parentElement!==rightCard) rightCard.appendChild(kbGrid);
     // Footer → dentro do card direito (após teclado)
     if(footerEl && footerEl.parentElement!==rightCard) rightCard.appendChild(footerEl);
-    // Tentativas → entre main e card direito (acima do card, fora de ambos)
+    // Tentativas → entre main e card direito
     if(attempts.parentElement!==app||attempts.nextElementSibling!==rightCard) app.insertBefore(attempts,rightCard);
   } else {
-    // Desktop: restaura kb-wrap e footer primeiro
-    if(kbWrap.parentElement!==app) app.insertBefore(kbWrap,footerEl||null);
+    // Desktop: restaura kb-grid e footer primeiro
+    if(kbGrid.parentElement!==app) app.insertBefore(kbGrid,footerEl||null);
     if(footerEl && footerEl.parentElement!==app) app.appendChild(footerEl);
     // Badge e data → de volta no header-row
     if(headerRow&&badge&&badge.parentElement!==headerRow) headerRow.insertBefore(badge,headerRow.firstChild);
