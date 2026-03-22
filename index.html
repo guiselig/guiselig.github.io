@@ -1714,7 +1714,8 @@ const MAX_ATT = 4, ORIGIN = new Date(Date.UTC(2026, 2, 17));
 // ── Modo Difícil ──
 let hardMode = false;
 let hardModes = { daily: false, inf: false, dupla: false, quadra: false };
-let infPendingHard = null; // null | true | false — mudança pendente para próxima palavra no infinito
+let infPendingHard = null;    // mudança de hard mode pendente para próxima palavra
+let infHardOffAt  = -1;      // nº de tentativas quando hard foi desativado mid-palavra
 function loadHardMode(){
   const s=st();
   if(s.hardModes){ hardModes=Object.assign({daily:false,inf:false,dupla:false,quadra:false},s.hardModes); }
@@ -1794,8 +1795,9 @@ function pickNextInfiniteWord(){
   infiniteWord=w;
   G={attempts:[],status:'playing'};
   infEliminated=[];infRevealPos=-1;
-  // Aplica mudança pendente de hard mode
+  // Aplica mudança pendente de hard mode e reseta flags
   if(infPendingHard!==null){ hardModes.inf=infPendingHard; saveHardMode(); infPendingHard=null; }
+  infHardOffAt=-1;
   syncHardMode();
   recompute();resetCells();
 }
@@ -3118,19 +3120,30 @@ document.getElementById('hard-toggle-input').addEventListener('change', function
 
   if(infiniteMode && midGame){
     if(tryingToActivate){
-      // OFF→ON mid-palavra: agenda para próxima — não salva no storage ainda
-      infPendingHard = true;
-      toast('🔥 MODO DIFÍCIL — ATIVO NA PRÓXIMA PALAVRA');
+      // OFF→ON mid-palavra: verifica se tentou algo depois de desativar
+      const guessedAfterOff = infHardOffAt >= 0 && G.attempts.length > infHardOffAt;
+      if(guessedAfterOff){
+        // Já tentou sem hard mode — adia para próxima palavra
+        infPendingHard = true;
+        toast('🔥 MODO DIFÍCIL — ATIVO NA PRÓXIMA PALAVRA');
+      } else {
+        // Não tentou ainda — aplica agora
+        infPendingHard = null; infHardOffAt = -1;
+        hardModes['inf'] = true; saveHardMode();
+        hardMode = true; updateHardBadge();
+        toast('🔥 MODO DIFÍCIL ATIVO');
+      }
     } else {
-      // ON→OFF mid-palavra: aplica agora, cancela qualquer pendente
+      // ON→OFF mid-palavra: aplica agora, registra nº de tentativas
       infPendingHard = null;
+      infHardOffAt = G.attempts.length;
       hardModes['inf'] = false; saveHardMode();
       hardMode = false; updateHardBadge();
       toast('MODO NORMAL — DISPONÍVEL NESTA PALAVRA');
     }
   } else {
-    // Sem tentativas ou diário: aplica imediatamente, cancela pendente
-    infPendingHard = null;
+    // Sem tentativas ou diário: aplica imediatamente, limpa flags
+    infPendingHard = null; infHardOffAt = -1;
     hardModes[mode] = this.checked; saveHardMode();
     hardMode = this.checked; updateHardBadge();
     if(infiniteMode && this.checked) toast('🔥 MODO DIFÍCIL — DISPONÍVEL NESTA PALAVRA');
