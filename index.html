@@ -774,8 +774,8 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
   /* Progresso e células */
   .prog { margin-bottom: 16px; }
   .cells-row { margin-bottom: 14px; gap: clamp(4px, 1.5vw, 8px); }
-  /* Skip: sem margem do topo do card, espaço pequeno para os pontos */
-  .btn-skip { margin-top: 2px !important; margin-bottom: 8px !important; }
+  /* Skip: largura respeitando curvas do card, distância fixa dos pontos */
+  .btn-skip { width: calc(100% - 40px) !important; margin: 0 auto 12px !important; display: block !important; }
   .cell-box {
     width: clamp(50px, 15vw, 68px);
     height: clamp(50px, 15vw, 68px);
