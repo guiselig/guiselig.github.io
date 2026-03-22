@@ -872,8 +872,7 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
 .hard-tut-rule-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
 .hard-tut-rule-name { font-family:var(--font-hd); font-size:10px; letter-spacing:1.5px; font-weight:700; color:var(--err); margin-bottom:4px; }
 .hard-tut-rule-desc { font-size:12px; color:var(--txt-mid); line-height:1.6; }
-.btn-inf-info { display:none; background:none; border:1px solid rgba(0,212,255,.35); color:#00d4ff; font-size:10px; font-weight:700; font-family:var(--font-hd); cursor:pointer; padding:0; width:17px; height:17px; border-radius:50%; align-items:center; justify-content:center; line-height:1; flex-shrink:0; transition:background .15s,border-color .15s; }
-body.infinite-active .btn-inf-info { display:inline-flex; }
+.btn-inf-info { background:none; border:1px solid rgba(0,212,255,.35); color:#00d4ff; font-size:10px; font-weight:700; font-family:var(--font-hd); cursor:pointer; padding:0; width:17px; height:17px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; line-height:1; flex-shrink:0; transition:background .15s,border-color .15s; }
 .btn-inf-info:hover { background:rgba(0,212,255,.12); border-color:#00d4ff; }
 .inf-tut-modal { background:var(--surf); border:1px solid rgba(0,212,255,.28); border-radius:16px; padding:clamp(20px,4vw,28px); width:100%; max-width:420px; display:flex; flex-direction:column; gap:16px; transform:scale(.94); transition:transform .2s; }
 .ov.show .inf-tut-modal { transform:scale(1); }
@@ -1275,10 +1274,7 @@ body.hard-active .logo-icon .sg-correct {
     <div id="left-col">
 
       <div class="header-row">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <div class="daily-badge">Palavra do Dia</div>
-          <button class="btn-inf-info" id="btn-inf-tut" title="Como funciona o modo infinito">?</button>
-        </div>
+        <div class="daily-badge">Palavra do Dia</div>
         <div class="day-lbl" id="day-lbl"></div>
       </div>
 
@@ -1400,7 +1396,10 @@ body.hard-active .logo-icon .sg-correct {
           <div class="mode-card-name">INFINITO</div>
           <div class="mode-card-desc">Jogue sem parar, sem limite de palavras.</div>
         </div>
-        <div class="mode-card-badge badge-inf" id="badge-infinite">JOGAR</div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="mode-card-badge badge-inf" id="badge-infinite">JOGAR</div>
+          <button class="btn-inf-info" id="btn-inf-tut" title="Como funciona o modo infinito">?</button>
+        </div>
       </div>
 
       <!-- Dupla (em breve) -->
