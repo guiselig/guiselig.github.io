@@ -3116,9 +3116,14 @@ document.getElementById('hard-toggle-input').addEventListener('change', function
   saveHardMode();
 
   if(infiniteMode && midGame){
-    // Infinito mid-palavra: salva mas aplica só na próxima (syncHardMode faz isso)
-    if(tryingToActivate) toast('🔥 MODO DIFÍCIL — ATIVO NA PRÓXIMA PALAVRA');
-    else                 toast('MODO NORMAL — DISPONÍVEL NA PRÓXIMA PALAVRA');
+    if(tryingToActivate){
+      // OFF→ON: adia para próxima palavra
+      toast('🔥 MODO DIFÍCIL — ATIVO NA PRÓXIMA PALAVRA');
+    } else {
+      // ON→OFF: aplica agora nesta palavra
+      hardMode = false; updateHardBadge();
+      toast('MODO NORMAL — DISPONÍVEL NESTA PALAVRA');
+    }
   } else {
     // Diário ou sem tentativas: aplica imediatamente
     hardMode = this.checked; updateHardBadge();
