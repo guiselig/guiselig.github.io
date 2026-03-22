@@ -605,7 +605,7 @@ main[data-letters="7"] {
 .btn-use-lf { background:rgba(0,212,255,.1); border:1px solid rgba(0,212,255,.4); color:#00d4ff; font-family:var(--font-hd); font-size:9px; font-weight:700; letter-spacing:1.5px; padding:6px 11px; border-radius:6px; cursor:pointer; white-space:nowrap; flex-shrink:0; transition:background .15s; }
 .btn-use-lf:hover { background:rgba(0,212,255,.22); }
 /* Pular */
-.btn-skip { display:none; background:rgba(0,212,255,.06); border:1px solid rgba(0,212,255,.28); color:#00d4ff; font-family:var(--font-hd); font-size:10px; font-weight:700; letter-spacing:2px; padding:9px; border-radius:var(--r); cursor:pointer; width:100%; transition:all .15s; margin-top:10px; }
+.btn-skip { display:none; background:rgba(0,212,255,.06); border:1px solid rgba(0,212,255,.28); color:#00d4ff; font-family:var(--font-hd); font-size:10px; font-weight:700; letter-spacing:2px; padding:9px; border-radius:var(--r); cursor:pointer; width:100%; transition:all .15s; margin-top:10px; margin-bottom:18px; }
 .btn-skip:hover:not(:disabled) { background:rgba(0,212,255,.14); }
 .btn-skip:disabled { opacity:.28; cursor:not-allowed; }
 body.infinite-active .btn-skip { display:block; }
@@ -2019,6 +2019,13 @@ function loadDay(day){
   recompute();resetCells();
 }
 
+function saveInfCurrent(){
+  if(!infiniteMode)return;
+  const s=st();
+  s.infCurrent={word:infiniteWord,attempts:G.attempts,status:G.status,hintsUsed:infHintsUsed,skipUsed:infSkipUsed,eliminated:infEliminated,revealPos:infRevealPos};
+  sv(s);
+}
+
 function saveDay(){
   if(infiniteMode){
     if(G.status!=='playing'){
@@ -2030,7 +2037,10 @@ function saveDay(){
       s.infStreak=infStreak;s.infPlayed=infPlayed;s.infWins=infWins;s.infBest=infBest;s.infGold=infGold;s.infHardPlayed=infHardPlayed;s.infHardWins=infHardWins;s.infLastStreak=infLastStreak;
       if(!s.infFirstDay)s.infFirstDay=new Date(realNow).toISOString().split('T')[0];
       if(won){if(!s.infDist)s.infDist={};const k=G.attempts.length;s.infDist[k]=(s.infDist[k]||0)+1;}
+      delete s.infCurrent; // limpa estado salvo ao terminar palavra
       sv(s);
+    } else {
+      saveInfCurrent(); // salva progresso da palavra atual
     }
     return;
   }
@@ -3062,7 +3072,10 @@ document.getElementById('btn-skip').addEventListener('click',useSkip);
 document.getElementById('btn-alpha-close').addEventListener('click',()=>closeOv('alpha-ov'));
 document.getElementById('btn-hint-close').addEventListener('click',()=>closeOv('hint-ov'));
 document.getElementById('btn-inf-lf-close').addEventListener('click',()=>closeOv('inf-lf-ov'));
-document.getElementById('btn-cal').addEventListener('click',showCalendar);
+document.getElementById('btn-cal').addEventListener('click',()=>{
+  if(infiniteMode){toast('CALENDÁRIO DISPONÍVEL APENAS NO MODO DIÁRIO');return;}
+  showCalendar();
+});
 document.getElementById('btn-stats').addEventListener('click',showStats);
 document.getElementById('btn-modes').addEventListener('click',()=>{ updateHardToggleSub(); document.getElementById('modes-ov').classList.add('show'); });
 document.getElementById('btn-modes-close').addEventListener('click',()=>closeOv('modes-ov'));
@@ -3152,9 +3165,6 @@ function layoutMobile(){
     }
     // Teclado → dentro do card direito
     if(kbWrap.parentElement!==rightCard) rightCard.appendChild(kbWrap);
-    // Skip button → abaixo do teclado no mobile
-    const btnSkip=document.getElementById('btn-skip');
-    if(btnSkip && btnSkip.parentElement!==rightCard) rightCard.appendChild(btnSkip);
     // Footer → dentro do card direito (após teclado)
     if(footerEl && footerEl.parentElement!==rightCard) rightCard.appendChild(footerEl);
     // Tentativas → entre main e card direito (acima do card, fora de ambos)
@@ -3168,10 +3178,6 @@ function layoutMobile(){
     if(headerRow&&dayLbl.parentElement!==headerRow) headerRow.appendChild(dayLbl);
     if(btns.parentElement!==rightCol) rightCol.insertBefore(btns,rightCol.firstChild);
     if(attempts.parentElement!==rightCol) rightCol.appendChild(attempts);
-    // Restaura btn-skip para dentro do right-col (após btn-ok)
-    const btnSkip=document.getElementById('btn-skip');
-    const btnOk=document.getElementById('btn-ok');
-    if(btnSkip && btnOk && btnSkip.parentElement!==rightCol) rightCol.insertBefore(btnSkip,btnOk.nextSibling);
     if(rightCard.parentElement!==mainEl) mainEl.appendChild(rightCard);
   }
 }
@@ -3329,7 +3335,14 @@ function bootInstant() {
     infiniteMode=true;
     syncHardMode();
     document.body.classList.add('infinite-active');
-    pickNextInfiniteWord();
+    // Restaura jogo em andamento se existir
+    const saved=s.infCurrent;
+    if(saved&&saved.word&&saved.status==='playing'){
+      infiniteWord=saved.word;G={attempts:saved.attempts||[],status:'playing'};
+      infHintsUsed=saved.hintsUsed||[false,false,false,false,false];
+      infSkipUsed=saved.skipUsed||false;infEliminated=saved.eliminated||[];infRevealPos=saved.revealPos??-1;
+      recompute();resetCells();
+    } else { pickNextInfiniteWord(); }
     if(!s.infTutSeen) setTimeout(showInfTutorial, 350);
   } else {
     // Modo diário
