@@ -935,7 +935,7 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
 }
 .hard-toggle-switch input:checked + .hard-toggle-slider { background: var(--err); }
 .hard-toggle-switch input:checked + .hard-toggle-slider::before { transform: translateX(20px); }
-.hard-toggle-disabled { opacity: .4; pointer-events: none; }
+.hard-toggle-disabled { opacity: .4; }
 
 /* ── STATS: dois cards flutuantes no mesmo overlay ── */
 .stats-ov-inner {
@@ -2441,7 +2441,7 @@ function updateHardToggleSub(){
     row.classList.toggle('hard-toggle-disabled',isDisabled);
     if(canActivate) sub.textContent='ATIVE ANTES DE COMEÇAR';
     else if(isOn) sub.textContent='MODO ATIVO — PODE DESATIVAR';
-    else sub.textContent='SÓ PODE ATIVAR ANTES DE JOGAR';
+    else sub.textContent='';
   } else {
     row.classList.remove('hard-toggle-disabled');
     sub.textContent=isOn?'MODO ATIVO — PODE DESATIVAR':'ATIVE PARA A PRÓXIMA PALAVRA';
