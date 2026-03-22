@@ -3103,19 +3103,31 @@ document.getElementById('att-drawer-handle').addEventListener('click',()=>{
 document.getElementById('hard-toggle-input').addEventListener('change', function(){
   const mode = infiniteMode ? 'inf' : 'daily';
   const tryingToActivate = this.checked;
-  if(mode==='daily' && tryingToActivate && G.attempts.length > 0){
+  const midGame = G.attempts.length > 0;
+
+  // Diário: bloqueia ativação mid-game
+  if(!infiniteMode && tryingToActivate && midGame){
     this.checked = false;
-    toast('DISPONÍVEL APENAS ANTES DE JOGAR');
+    toast('SÓ PODE ATIVAR ANTES DE JOGAR');
     return;
   }
+
   hardModes[mode] = this.checked;
   saveHardMode();
-  // No infinito com palavra em andamento, aplica só na próxima palavra
-  const midInfWord = infiniteMode && G.attempts.length > 0;
-  if(!midInfWord){ hardMode = this.checked; updateHardBadge(); }
-  if(infiniteMode && this.checked && midInfWord) toast('🔥 MODO DIFÍCIL — DISPONÍVEL NA PRÓXIMA PALAVRA');
-  else if(infiniteMode && !this.checked && midInfWord) toast('MODO NORMAL — DISPONÍVEL NA PRÓXIMA PALAVRA');
-  else toast(this.checked ? '🔥 MODO DIFÍCIL ATIVADO' : 'MODO NORMAL ATIVADO');
+
+  if(infiniteMode && midGame){
+    // Infinito mid-palavra: salva mas aplica só na próxima (syncHardMode faz isso)
+    if(tryingToActivate) toast('🔥 MODO DIFÍCIL — ATIVO NA PRÓXIMA PALAVRA');
+    else                 toast('MODO NORMAL — DISPONÍVEL NA PRÓXIMA PALAVRA');
+  } else if(!infiniteMode && !tryingToActivate && midGame){
+    // Diário: desativando mid-game → aplica agora
+    hardMode = false; updateHardBadge();
+    toast('MODO NORMAL — DISPONÍVEL NESSA PALAVRA');
+  } else {
+    // Sem tentativas: aplica imediatamente
+    hardMode = this.checked; updateHardBadge();
+    toast(this.checked ? '🔥 MODO DIFÍCIL ATIVADO' : 'MODO NORMAL ATIVADO');
+  }
   updateHardToggleSub();
   if(this.checked && !st().hardTutSeen) setTimeout(showHardTutorial, 350);
 });
