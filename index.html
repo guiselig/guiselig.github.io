@@ -1714,6 +1714,7 @@ const MAX_ATT = 4, ORIGIN = new Date(Date.UTC(2026, 2, 17));
 // ── Modo Difícil ──
 let hardMode = false;
 let hardModes = { daily: false, inf: false, dupla: false, quadra: false };
+let infPendingHard = null; // null | true | false — mudança pendente para próxima palavra no infinito
 function loadHardMode(){
   const s=st();
   if(s.hardModes){ hardModes=Object.assign({daily:false,inf:false,dupla:false,quadra:false},s.hardModes); }
@@ -1793,6 +1794,9 @@ function pickNextInfiniteWord(){
   infiniteWord=w;
   G={attempts:[],status:'playing'};
   infEliminated=[];infRevealPos=-1;
+  // Aplica mudança pendente de hard mode
+  if(infPendingHard!==null){ hardModes.inf=infPendingHard; saveHardMode(); infPendingHard=null; }
+  syncHardMode();
   recompute();resetCells();
 }
 
@@ -3112,22 +3116,25 @@ document.getElementById('hard-toggle-input').addEventListener('change', function
     return;
   }
 
-  hardModes[mode] = this.checked;
-  saveHardMode();
-
   if(infiniteMode && midGame){
     if(tryingToActivate){
-      // OFF→ON: adia para próxima palavra
+      // OFF→ON mid-palavra: agenda para próxima — não salva no storage ainda
+      infPendingHard = true;
       toast('🔥 MODO DIFÍCIL — ATIVO NA PRÓXIMA PALAVRA');
     } else {
-      // ON→OFF: aplica agora nesta palavra
+      // ON→OFF mid-palavra: aplica agora, cancela qualquer pendente
+      infPendingHard = null;
+      hardModes['inf'] = false; saveHardMode();
       hardMode = false; updateHardBadge();
       toast('MODO NORMAL — DISPONÍVEL NESTA PALAVRA');
     }
   } else {
-    // Diário ou sem tentativas: aplica imediatamente
+    // Sem tentativas ou diário: aplica imediatamente, cancela pendente
+    infPendingHard = null;
+    hardModes[mode] = this.checked; saveHardMode();
     hardMode = this.checked; updateHardBadge();
-    toast(this.checked ? '🔥 MODO DIFÍCIL ATIVADO' : 'MODO NORMAL ATIVADO');
+    if(infiniteMode && this.checked) toast('🔥 MODO DIFÍCIL — DISPONÍVEL NESTA PALAVRA');
+    else toast(this.checked ? '🔥 MODO DIFÍCIL ATIVADO' : 'MODO NORMAL ATIVADO');
   }
   updateHardToggleSub();
   if(this.checked && !st().hardTutSeen) setTimeout(showHardTutorial, 350);
