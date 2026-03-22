@@ -605,7 +605,7 @@ main[data-letters="7"] {
 .btn-use-lf { background:rgba(0,212,255,.1); border:1px solid rgba(0,212,255,.4); color:#00d4ff; font-family:var(--font-hd); font-size:9px; font-weight:700; letter-spacing:1.5px; padding:6px 11px; border-radius:6px; cursor:pointer; white-space:nowrap; flex-shrink:0; transition:background .15s; }
 .btn-use-lf:hover { background:rgba(0,212,255,.22); }
 /* Pular */
-.btn-skip { display:none; background:rgba(0,212,255,.06); border:1px solid rgba(0,212,255,.28); color:#00d4ff; font-family:var(--font-hd); font-size:10px; font-weight:700; letter-spacing:2px; padding:9px; border-radius:var(--r); cursor:pointer; width:100%; transition:all .15s; margin-top:10px; margin-bottom:18px; }
+.btn-skip { display:none; background:rgba(0,212,255,.06); border:1px solid rgba(0,212,255,.28); color:#00d4ff; font-family:var(--font-hd); font-size:10px; font-weight:700; letter-spacing:2px; padding:9px; border-radius:var(--r); cursor:pointer; width:100%; transition:all .15s; margin-top:10px; margin-bottom:4px; }
 .btn-skip:hover:not(:disabled) { background:rgba(0,212,255,.14); }
 .btn-skip:disabled { opacity:.28; cursor:not-allowed; }
 body.infinite-active .btn-skip { display:block; }
@@ -780,7 +780,15 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
     font-size: clamp(19px, 5.5vw, 25px);
   }
 
-  /* Tentativas */
+  /* Tentativas — scroll próprio no mobile */
+  #attempts-section {
+    overflow-y: auto;
+    max-height: clamp(80px, 18vh, 160px);
+    width: 100%;
+    padding: 4px 12px;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+  }
   .att-cell {
     width:  clamp(24px, 7vw, 34px);
     height: clamp(24px, 7vw, 34px);
@@ -1954,7 +1962,7 @@ function buildKb(){
       if(key==='⌫'){btn.classList.add('kb-wide','kb-bksp');btn.textContent='⌫';}
       else if(key==='ENTER'){btn.classList.add('kb-wide');btn.textContent='ENTER';}
       else{
-        if(states[key])btn.classList.add(states[key]);
+        if(infiniteMode&&states[key])btn.classList.add(states[key]);
         btn.innerHTML=makeTutSVG(key,'correct',10,15);
       }
       btn.addEventListener('pointerdown',e=>{
