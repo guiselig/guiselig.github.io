@@ -977,13 +977,13 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
 #hard-badge-wrap {
   display: grid;
   grid-template-rows: 0fr;
+  overflow: hidden;
   transition: grid-template-rows .35s ease-out;
 }
 #hard-badge-wrap.visible {
   grid-template-rows: 1fr;
 }
 #hard-badge {
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
