@@ -589,17 +589,19 @@ main[data-letters="7"] {
 .btn-reveal:hover { border-color:var(--acc); color:var(--acc); }
 
 /* ── CORINGAS INFINITO ── */
-.inf-lf-modal { background:var(--surf); border:1px solid rgba(0,212,255,.28); border-radius:16px; padding:clamp(18px,4vw,28px); width:100%; max-width:480px; display:flex; flex-direction:column; gap:10px; transform:scale(.94); transition:transform .2s; }
+.inf-lf-modal { background:var(--surf); border:1px solid rgba(0,212,255,.28); border-radius:16px; padding:clamp(18px,4vw,28px); width:100%; max-width:480px; display:flex; flex-direction:column; gap:8px; transform:scale(.94); transition:transform .2s; }
+#inf-lf-list { display:flex; flex-direction:column; gap:8px; }
 .ov.show .inf-lf-modal { transform:scale(1); }
 .inf-lf-title { font-family:var(--font-hd); font-weight:700; font-size:clamp(13px,2vw,15px); color:#00d4ff; letter-spacing:3px; text-align:center; margin-bottom:2px; }
 .inf-lf-sub { font-size:11px; color:var(--txt-dim); letter-spacing:1.5px; text-align:center; margin-top:-4px; }
-.lf-item { display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:var(--r); border:1px solid var(--bdr); background:var(--surf2); transition:all .2s; }
-.lf-item.lf-used { opacity:.32; }
+@keyframes lfReveal { 0%{background:rgba(0,212,255,.18);border-color:rgba(0,212,255,.7);} 100%{background:var(--surf2);border-color:rgba(0,212,255,.35);} }
+.lf-item { display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:var(--r); border:1px solid var(--bdr); background:var(--surf2); transition:border-color .3s; }
+.lf-item.lf-used { border-color:rgba(0,212,255,.35); animation:lfReveal .6s ease-out forwards; }
 .lf-icon { font-size:18px; width:24px; text-align:center; flex-shrink:0; }
 .lf-body { flex:1; min-width:0; }
 .lf-name { font-family:var(--font-hd); font-size:10px; font-weight:700; letter-spacing:2px; color:#00d4ff; }
-.lf-desc { font-size:12px; color:var(--txt-dim); margin-top:2px; line-height:1.4; }
-.lf-item.lf-used .lf-name { color:var(--txt-dim); }
+.lf-desc { font-size:12px; color:var(--txt); margin-top:2px; line-height:1.4; }
+.lf-item:not(.lf-used) .lf-desc { color:var(--txt-dim); }
 .btn-use-lf { background:rgba(0,212,255,.1); border:1px solid rgba(0,212,255,.4); color:#00d4ff; font-family:var(--font-hd); font-size:9px; font-weight:700; letter-spacing:1.5px; padding:6px 11px; border-radius:6px; cursor:pointer; white-space:nowrap; flex-shrink:0; transition:background .15s; }
 .btn-use-lf:hover { background:rgba(0,212,255,.22); }
 /* Pular */
@@ -2540,9 +2542,10 @@ function renderInfHints(){
   INF_LF.forEach((lf,i)=>{
     const isUsed=infHintsUsed[i];
     const item=document.createElement('div');
-    item.className='lf-item'+(isUsed?' lf-used':'');
+    item.className='lf-item';
     const desc=isUsed?lf.fn():'Disponível para usar';
     item.innerHTML=`<div class="lf-icon">${lf.icon}</div><div class="lf-body"><div class="lf-name">${lf.name}</div><div class="lf-desc">${desc}</div></div>${isUsed?'':`<button class="btn-use-lf" onclick="useInfHint(${i})">USAR</button>`}`;
+    if(isUsed){ void item.offsetWidth; item.classList.add('lf-used'); }
     list.appendChild(item);
   });
 }
