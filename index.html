@@ -566,8 +566,12 @@ main[data-letters="7"] {
 .alpha-modal { background:var(--surf); border:1px solid var(--bdr2); border-radius:16px; padding:clamp(20px,4vw,40px); width:100%; max-width:920px; max-height:92dvh; overflow-y:auto; display:flex; flex-direction:column; gap:20px; transform:scale(.94); transition:transform .2s; }
 .ov.show .alpha-modal { transform:scale(1); }
 .alpha-grid { display:grid; grid-template-columns:repeat(13,1fr); row-gap:32px; justify-items:center; }
-.alpha-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
-.alpha-lbl { font-family:var(--font-dig); font-size:9px; letter-spacing:1px; color:var(--txt-dim); }
+.alpha-item { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; }
+.alpha-item:hover .alpha-lbl { color:var(--txt); }
+.alpha-lbl { font-family:var(--font-dig); font-size:9px; letter-spacing:1px; color:var(--txt-dim); transition:color .15s; }
+.alpha-preview-card { background:var(--cell); border:2px solid var(--bdr2); border-radius:12px; padding:10px; display:flex; flex-direction:column; align-items:center; gap:6px; animation:alpha-pop .25s ease-out; }
+@keyframes alpha-pop { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
+.alpha-preview-lbl { font-family:var(--font-dig); font-size:14px; letter-spacing:2px; color:var(--txt-mid); }
 
 /* ── DICAS ── */
 .hint-modal { background:var(--surf); border:1px solid var(--bdr2); border-radius:16px; padding:clamp(20px,4vw,32px); width:100%; max-width:480px; display:flex; flex-direction:column; gap:14px; transform:scale(.94); transition:transform .2s; }
@@ -1656,6 +1660,7 @@ body.hard-active .logo-icon .sg-correct {
 <div class="ov" id="alpha-ov">
   <div class="alpha-modal">
     <div class="modal-title">ALFABETO</div>
+    <div id="alpha-preview" style="display:flex;justify-content:center;align-items:center;min-height:0;overflow:hidden;max-height:0;opacity:0;transition:max-height .35s ease-out,opacity .25s ease-out,margin-bottom .35s ease-out;margin-bottom:0;"></div>
     <div class="alpha-grid" id="alpha-grid"></div>
     <button class="btn-s" id="btn-alpha-close">FECHAR</button>
   </div>
@@ -2489,13 +2494,29 @@ let tutSlide=0;const TUT_N=5;
 // ── Alfabeto ──
 function showAlpha(){
   const grid=document.getElementById('alpha-grid');grid.innerHTML='';
+  const preview=document.getElementById('alpha-preview');
+  const cols=window.innerWidth<=700?7:13;
+  const svgW=Math.floor((document.querySelector('.alpha-modal').clientWidth-80)/cols*0.64);
+  const previewSize=90;
+
+  function showPreview(ch){
+    preview.innerHTML=`<div class="alpha-preview-card">${makeTutSVG(ch,'on',previewSize,Math.round(previewSize*1.5))}<div class="alpha-preview-lbl">${ch}</div></div>`;
+    preview.style.maxHeight='200px';
+    preview.style.opacity='1';
+    preview.style.marginBottom='4px';
+  }
+
   for(const ch of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'){
     const item=document.createElement('div');item.className='alpha-item';
-    const cols=window.innerWidth<=700?7:13;
-    const svgW=Math.floor((document.querySelector('.alpha-modal').clientWidth-80)/cols*0.64);
     item.innerHTML=`${makeTutSVG(ch,'on',svgW,Math.round(svgW*1.5))}<div class="alpha-lbl">${ch}</div>`;
+    item.addEventListener('click',()=>showPreview(ch));
     grid.appendChild(item);
   }
+  // Reset preview on open
+  preview.innerHTML='';
+  preview.style.maxHeight='0';
+  preview.style.opacity='0';
+  preview.style.marginBottom='0';
   document.getElementById('alpha-ov').classList.add('show');
 }
 
