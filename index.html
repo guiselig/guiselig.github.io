@@ -1654,11 +1654,16 @@ body.hard-active .logo-icon .sg-correct {
 
 <!-- Modal: alfabeto -->
 <div class="ov" id="alpha-ov">
-  <div class="alpha-modal">
-    <div class="modal-title">ALFABETO</div>
-    <div id="alpha-preview" style="display:flex;justify-content:center;align-items:center;min-height:0;overflow:hidden;max-height:0;opacity:0;transition:max-height .35s ease-out,opacity .25s ease-out,margin-bottom .35s ease-out;margin-bottom:0;"></div>
-    <div class="alpha-grid" id="alpha-grid"></div>
-    <button class="btn-s" id="btn-alpha-close">FECHAR</button>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:920px;">
+    <div id="alpha-preview" style="display:none;flex-direction:column;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:10px 16px;">
+      <span style="font-family:var(--font-dig);font-size:8px;letter-spacing:2px;color:var(--txt-dim);text-transform:uppercase;">Traços Atuais</span>
+      <div id="alpha-preview-glyph" style="display:flex;gap:4px;justify-content:center;transform-origin:center top;"></div>
+    </div>
+    <div class="alpha-modal">
+      <div class="modal-title">ALFABETO</div>
+      <div class="alpha-grid" id="alpha-grid"></div>
+      <button class="btn-s" id="btn-alpha-close">FECHAR</button>
+    </div>
   </div>
 </div>
 
@@ -2497,29 +2502,23 @@ function showAlpha(){
     item.innerHTML=`${makeTutSVG(ch,'on',svgW,Math.round(svgW*1.5))}<div class="alpha-lbl">${ch}</div>`;
     grid.appendChild(item);
   }
-  // Preview: clone do glyph atual em escala reduzida
+  // Preview: clone do glyph atual acima do modal
   const preview=document.getElementById('alpha-preview');
+  const previewGlyph=document.getElementById('alpha-preview-glyph');
   const glyphRow=document.getElementById('glyph-row');
   if(glyphRow && glyphRow.children.length){
     const clone=glyphRow.cloneNode(true);
     clone.id='';
-    clone.style.cssText='display:flex;gap:4px;justify-content:center;transform-origin:center top;';
-    preview.innerHTML='';
-    preview.appendChild(clone);
-    preview.style.maxHeight='200px';
-    preview.style.opacity='1';
-    preview.style.marginBottom='8px';
-    // Escala o clone para caber bem
+    previewGlyph.innerHTML='';
+    previewGlyph.appendChild(clone);
+    preview.style.display='flex';
     requestAnimationFrame(()=>{
-      const mw=document.querySelector('.alpha-modal').clientWidth-80;
+      const pw=preview.clientWidth-32;
       const gw=clone.scrollWidth;
-      if(gw>0){const sc=Math.min(1,mw/gw*0.55);clone.style.transform=`scale(${sc})`;}
+      if(gw>0){const sc=Math.min(1,pw/gw*0.9);clone.style.transform=`scale(${sc})`;}
     });
   } else {
-    preview.innerHTML='';
-    preview.style.maxHeight='0';
-    preview.style.opacity='0';
-    preview.style.marginBottom='0';
+    preview.style.display='none';
   }
   document.getElementById('alpha-ov').classList.add('show');
 }
