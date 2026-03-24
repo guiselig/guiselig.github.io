@@ -1837,6 +1837,8 @@ function pickNextInfiniteWord(){
   infUsedWords.push(w);
   infiniteWord=w;
   G={attempts:[],status:'playing'};
+  // Converte resultados de dicas em "usado sem texto" para a nova palavra
+  infHintsUsed=infHintsUsed.map(h=>h?true:false);
   infEliminated=[];infRevealPos=-1;
   // Aplica mudança pendente de hard mode e reseta flags
   if(infPendingHard!==null){ hardModes.inf=infPendingHard; saveHardMode(); infPendingHard=null; }
@@ -2591,7 +2593,7 @@ const INF_LF=[
   {icon:'💡',name:'REVELAR LETRA',fn:()=>{const t=getTarget(currentDay);return infRevealPos>=0?`Posição ${infRevealPos+1}: <strong>${t[infRevealPos]}</strong>`:'Letra revelada nas células';}}
 ];
 function useInfHint(i){
-  if(infHintsUsed[i])return;
+  if(infHintsUsed[i]!==false)return;
   if(G.status!=='playing'){toast('TERMINE A PALAVRA ATUAL PRIMEIRO');return;}
   const t=getTarget(currentDay);
   if(i===0||i===1||i===2){
@@ -2611,7 +2613,7 @@ function useInfHint(i){
     infRevealPos=avail[Math.floor(Math.random()*avail.length)];
     recompute();resetCells();render();
   }
-  infHintsUsed[i]=true;
+  infHintsUsed[i]=INF_LF[i].fn(); // guarda o resultado como texto
   renderInfHints();
   saveInfCurrent();
 }
@@ -2623,11 +2625,13 @@ function renderInfHints(){
   if(sub)sub.textContent=`${5-used} DE 5 DISPONÍVEIS`;
   list.innerHTML='';
   INF_LF.forEach((lf,i)=>{
-    const isUsed=infHintsUsed[i];
+    const val=infHintsUsed[i]; // false | string (resultado atual) | true (palavra anterior)
+    const isUsed=!!val;
+    const hasResult=typeof val==='string';
     const item=document.createElement('div');
     item.className='lf-item';
-    const desc=isUsed?lf.fn():'Disponível para usar';
-    item.innerHTML=`<div class="lf-icon">${lf.icon}</div><div class="lf-body"><div class="lf-name">${lf.name}</div><div class="lf-desc">${desc}</div></div>${isUsed?'':`<button class="btn-use-lf" onclick="useInfHint(${i})">USAR</button>`}`;
+    const desc=hasResult?val:'Disponível para usar';
+    item.innerHTML=`<div class="lf-icon">${lf.icon}</div><div class="lf-body"><div class="lf-name">${lf.name}</div>${hasResult||!isUsed?`<div class="lf-desc">${desc}</div>`:''}</div>${isUsed?'':`<button class="btn-use-lf" onclick="useInfHint(${i})">USAR</button>`}`;
     if(isUsed){ void item.offsetWidth; item.classList.add('lf-used'); }
     list.appendChild(item);
   });
