@@ -980,10 +980,12 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
   display: grid;
   grid-template-rows: 0fr;
   overflow: hidden;
-  transition: grid-template-rows .35s ease-out;
+  margin-top: -10px;
+  transition: grid-template-rows .35s ease-out, margin-top .35s ease-out;
 }
 #hard-badge-wrap.visible {
   grid-template-rows: 1fr;
+  margin-top: 0;
 }
 #hard-badge {
   display: flex;
