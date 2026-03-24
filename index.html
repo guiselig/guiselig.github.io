@@ -1808,6 +1808,7 @@ let cellVals = [], focusIdx = 0;
 // ── MODO INFINITO ──
 let infiniteMode = false;
 let infiniteWord  = '';
+let infUsedWords  = [];
 let infStreak     = 0;
 let infPlayed     = 0;
 let infWins       = 0;
@@ -1829,8 +1830,11 @@ function resetInfLifelines(){
 function pickNextInfiniteWord(){
   const pool=DAILY_POOL.filter(w=>/^[A-Z]{5,7}$/.test(w));
   if(!pool.length)return;
+  const fresh=pool.filter(w=>!infUsedWords.includes(w));
+  const src=fresh.length?fresh:pool; // fallback se esgotou o pool
   let w,tries=0;
-  do{w=pool[Math.floor(Math.random()*pool.length)];tries++;}while(w===infiniteWord&&pool.length>1&&tries<15);
+  do{w=src[Math.floor(Math.random()*src.length)];tries++;}while(w===infiniteWord&&src.length>1&&tries<15);
+  infUsedWords.push(w);
   infiniteWord=w;
   G={attempts:[],status:'playing'};
   infEliminated=[];infRevealPos=-1;
@@ -2078,7 +2082,7 @@ function loadDay(day){
 function saveInfCurrent(){
   if(!infiniteMode)return;
   const s=st();
-  s.infCurrent={word:infiniteWord,attempts:G.attempts,status:G.status,hintsUsed:infHintsUsed,skipUsed:infSkipUsed,eliminated:infEliminated,revealPos:infRevealPos};
+  s.infCurrent={word:infiniteWord,attempts:G.attempts,status:G.status,hintsUsed:infHintsUsed,skipUsed:infSkipUsed,eliminated:infEliminated,revealPos:infRevealPos,usedWords:infUsedWords};
   sv(s);
 }
 
@@ -2087,7 +2091,7 @@ function saveDay(){
     if(G.status!=='playing'){
       infPlayed++;
       const won=G.status==='won';
-      if(won){infStreak++;infWins++;if(infStreak>infBest)infBest=infStreak;if(G.attempts.length===1)infGold++;}else{infLastStreak=infStreak;infStreak=0;resetInfLifelines();}
+      if(won){infStreak++;infWins++;if(infStreak>infBest)infBest=infStreak;if(G.attempts.length===1)infGold++;}else{infLastStreak=infStreak;infStreak=0;infUsedWords=[];resetInfLifelines();}
       if(hardMode){infHardPlayed++;if(won)infHardWins++;}
       const s=st();
       s.infStreak=infStreak;s.infPlayed=infPlayed;s.infWins=infWins;s.infBest=infBest;s.infGold=infGold;s.infHardPlayed=infHardPlayed;s.infHardWins=infHardWins;s.infLastStreak=infLastStreak;
@@ -3438,6 +3442,7 @@ function bootInstant() {
       infiniteWord=saved.word;G={attempts:saved.attempts||[],status:'playing'};
       infHintsUsed=saved.hintsUsed||[false,false,false,false,false];
       infSkipUsed=saved.skipUsed||false;infEliminated=saved.eliminated||[];infRevealPos=saved.revealPos??-1;
+      infUsedWords=saved.usedWords||[saved.word];
       recompute();resetCells();
     } else { pickNextInfiniteWord(); }
     if(!s.infTutSeen) setTimeout(showInfTutorial, 350);
