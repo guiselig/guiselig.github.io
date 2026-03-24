@@ -1673,7 +1673,7 @@ body.hard-active .logo-icon .sg-correct {
   <div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:920px;">
     <div id="alpha-preview" style="display:none;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:8px 14px;">
       <span style="font-family:var(--font-dig);font-size:7px;letter-spacing:2px;color:var(--txt-dim);text-transform:uppercase;">Traços Atuais</span>
-      <div id="alpha-preview-glyph" style="display:flex;gap:3px;justify-content:center;transform-origin:center top;overflow:hidden;"></div>
+      <div id="alpha-preview-glyph" style="display:flex;justify-content:center;"></div>
     </div>
     <div class="alpha-modal">
       <div class="modal-title">ALFABETO</div>
@@ -2527,18 +2527,8 @@ function showAlpha(){
     clone.id='';
     previewGlyph.innerHTML='';
     previewGlyph.appendChild(clone);
+    clone.style.zoom='0.38';
     preview.style.display='flex';
-    requestAnimationFrame(()=>{
-      const gw=clone.scrollWidth||clone.offsetWidth;
-      const gh=clone.scrollHeight||clone.offsetHeight;
-      if(gw>0){
-        const sc=0.22;
-        clone.style.transform=`scale(${sc})`;
-        clone.style.transformOrigin='center top';
-        previewGlyph.style.width  = Math.round(gw*sc)+'px';
-        previewGlyph.style.height = Math.round(gh*sc)+'px';
-      }
-    });
   } else {
     preview.style.display='none';
   }
