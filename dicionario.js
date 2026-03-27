@@ -3,7 +3,6 @@
 
 const DICIONARIO = [
   "AABORA",
-  "NIGGA",
   "AACHEN",
   "AAIRA",
   "AAIUN",
@@ -134646,3 +134645,4 @@ const DICIONARIO = [
   "ZUUII",
   "ZUZINS",
 ];
+
