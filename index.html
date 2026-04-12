@@ -743,8 +743,8 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
 
   /* Badge e data no mobile */
   .header-row { display: none; }
-  .daily-badge { display: block; font-size: 13px; margin-bottom: 0; text-align: center; }
-  .day-lbl { font-size: 11px; text-align: center; align-self: center; padding: 0; margin-bottom: 1px; }
+  .daily-badge { display: block; font-size: 13px; margin-bottom: 8px; text-align: center; }
+  .day-lbl { font-size: 11px; text-align: center; align-self: center; padding: 0; margin-top: 8px; margin-bottom: 1px; }
   #left-col { gap: 2px; }
 
   /* Classe de animação com delay para o mobile */
@@ -987,6 +987,13 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
   grid-template-rows: 1fr;
 }
 #hard-badge {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+.hard-badge-pill {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -999,12 +1006,11 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
   border: 1px solid rgba(248,81,73,.35);
   border-radius: 20px;
   background: rgba(248,81,73,.08);
-  align-self: center;
   opacity: 0;
   transform: scale(0.5);
   transition: opacity .3s ease-out, transform .35s ease-out;
 }
-#hard-badge-wrap.visible #hard-badge {
+#hard-badge-wrap.visible .hard-badge-pill {
   opacity: 1;
   transform: scale(1);
 }
@@ -1334,7 +1340,7 @@ body.hard-active .logo-icon .sg-correct {
 
       <div class="glass-card" style="flex-direction:column;gap:0;">
         <div class="glyph-row" id="glyph-row"></div>
-        <div id="hard-badge-wrap"><div id="hard-badge">🔥 MODO DIFÍCIL</div></div>
+        <div id="hard-badge-wrap"><div id="hard-badge"><span class="hard-badge-pill">🔥 MODO DIFÍCIL</span></div></div>
       </div>
     </div>
 
