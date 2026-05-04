@@ -772,6 +772,9 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
   .btn-ico svg { width: 20px; height: 20px; }
   .btn-ico--text { font-size: 12px; }
 
+  /* Hard badge: espaço abaixo para separar do badge de modo */
+  #hard-badge { padding-bottom: 10px; }
+
   /* Progresso e células */
   .prog { margin-bottom: 16px; }
   .cells-row { margin-bottom: 14px; gap: clamp(4px, 1.5vw, 8px); }
@@ -910,7 +913,10 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
 .btn-inf-info { background:none; border:1px solid rgba(0,212,255,.35); color:#00d4ff; font-size:10px; font-weight:700; font-family:var(--font-heading); cursor:pointer; padding:0; width:17px; height:17px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; line-height:1; flex-shrink:0; transition:background .15s,border-color .15s; }
 .btn-inf-info:hover { background:rgba(0,212,255,.12); border-color:#00d4ff; }
 .inf-tut-modal { background:var(--surface); border:1px solid rgba(0,212,255,.28); border-radius:16px; padding:clamp(20px,4vw,28px); width:100%; max-width:420px; max-height:90dvh; display:flex; flex-direction:column; gap:16px; transform:scale(.94); transition:transform .2s; overflow:hidden; }
-.inf-tut-rules { overflow-y:auto; -webkit-overflow-scrolling:touch; min-height:0; flex:1; }
+.inf-tut-rules { overflow-y:scroll; -webkit-overflow-scrolling:touch; min-height:0; flex:1; scrollbar-width:thin; scrollbar-color:rgba(0,212,255,.35) transparent; }
+.inf-tut-rules::-webkit-scrollbar { width:4px; }
+.inf-tut-rules::-webkit-scrollbar-track { background:transparent; }
+.inf-tut-rules::-webkit-scrollbar-thumb { background:rgba(0,212,255,.35); border-radius:2px; }
 .ov.show .inf-tut-modal { transform:scale(1); }
 .inf-tut-title { font-family:var(--font-heading); font-weight:700; font-size:17px; color:#00d4ff; letter-spacing:2px; text-align:center; }
 .inf-tut-sub { font-size:10px; letter-spacing:3px; color:var(--text-dim); text-align:center; margin-top:-8px; }
@@ -3278,12 +3284,8 @@ function layoutMobile(){
     if(hardBadgeWrap&&leftCol.firstChild!==hardBadgeWrap) leftCol.insertBefore(hardBadgeWrap,leftCol.firstChild);
     // Badge → antes do glass-card em leftCol
     if(badge&&badge.parentElement!==leftCol) leftCol.insertBefore(badge,leftGlass);
-    // Data → antes do glass-card no infinito, após no diário
-    if(infiniteMode){
-      if(dayLbl.parentElement!==leftCol||dayLbl.nextElementSibling!==leftGlass) leftCol.insertBefore(dayLbl,leftGlass);
-    }else{
-      if(dayLbl.parentElement!==leftCol||leftCol.lastChild!==dayLbl) leftCol.appendChild(dayLbl);
-    }
+    // Data → após o glass-card em leftCol
+    if(dayLbl.parentElement!==leftCol||leftCol.lastChild!==dayLbl) leftCol.appendChild(dayLbl);
     // Ícones → dentro do logo-header (à direita do título)
     const logoHeader=document.getElementById('logo-header');
     if(logoHeader && btns.parentElement!==logoHeader) logoHeader.appendChild(btns);
