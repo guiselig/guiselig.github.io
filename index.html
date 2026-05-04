@@ -777,7 +777,7 @@ body.infinite-active .logo-name { text-shadow:0 0 22px rgba(0,212,255,.40); }
   .prog { margin-bottom: 16px; }
   .cells-row { margin-bottom: 14px; gap: clamp(4px, 1.5vw, 8px); }
   /* Skip: largura respeitando curvas do card, distância fixa dos pontos */
-  .btn-skip { width: calc(100% - 40px) !important; margin: 0 auto 12px !important; }
+  .btn-skip { width: calc(100% - 40px) !important; margin: 0 auto 16px !important; }
   body.infinite-active .btn-skip { display: block !important; }
   .cell-box {
     width: clamp(50px, 15vw, 68px);
@@ -1041,7 +1041,10 @@ body.hard-active .logo-icon .sg-correct {
   50%      { border-color: rgba(248,81,73,.70); box-shadow: 0 0 16px rgba(248,81,73,.35); }
 }
 @media (max-width: 700px) {
-  body.hard-active .g-cell { animation: hardPulse 2s ease-in-out infinite; }
+  body.hard-active .g-cell {
+    border-color: rgba(248,81,73,.45);
+    box-shadow: 0 0 10px rgba(248,81,73,.12);
+  }
   #btn-alpha { display: none; }
 }
 @keyframes hardPulseBox {
