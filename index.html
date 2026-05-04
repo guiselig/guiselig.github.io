@@ -3309,9 +3309,10 @@ function layoutMobile(){
     if(btns.parentElement!==rightCol) rightCol.insertBefore(btns,rightCol.firstChild);
     if(attempts.parentElement!==rightCol) rightCol.appendChild(attempts);
     if(rightCard.parentElement!==mainEl) mainEl.appendChild(rightCard);
-    // Restaura hard-badge-wrap dentro do glass-card no desktop
+    // hard-badge-wrap: após o glass-card no desktop (fora da caixa, para não alterar sua altura)
     const hardBadgeWrap=document.getElementById('hard-badge-wrap');
-    if(hardBadgeWrap&&hardBadgeWrap.parentElement!==leftGlass) leftGlass.appendChild(hardBadgeWrap);
+    if(hardBadgeWrap&&(hardBadgeWrap.parentElement!==leftCol||hardBadgeWrap.previousElementSibling!==leftGlass))
+      leftCol.insertBefore(hardBadgeWrap,leftGlass.nextElementSibling||null);
   }
 }
 window.addEventListener('resize', layoutMobile);
